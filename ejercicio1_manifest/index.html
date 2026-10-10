@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Metadatos de instalación y diseño responsivo -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#3b82f6">
+  <meta name="description" content="Ejercicio 1: Web App Manifest y Metadatos de Instalación PWA">
+  
+  <!-- Soporte para iOS / Apple Web App -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PWA E1">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+  <!-- Enlace obligatorio al Web App Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <title>Ejercicio 1 | Web App Manifest y Metadatos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="badge">Ejercicio 1</div>
+      <h1>Web App Manifest &amp; Metadatos</h1>
+      <p class="subtitle">Configuración del archivo <code>manifest.json</code>, metadatos en HTML y paquete de iconos PNG para instalación nativa.</p>
+    </header>
+
+    <!-- Botón de instalación nativa -->
+    <section class="card install-card">
+      <div class="install-info">
+        <span class="pulse-dot"></span>
+        <div>
+          <h3>Estado de Instalación PWA</h3>
+          <p id="installStatusText">Esperando disponibilidad del prompt de instalación en el navegador...</p>
+        </div>
+      </div>
+      <button id="btnInstall" class="btn btn-primary" disabled>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Instalar Aplicación
+      </button>
+    </section>
+
+    <!-- Visualizador de propiedades del manifest.json -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Propiedades Clave Configuradas en <code>manifest.json</code></h2>
+        <span class="tag">JSON Validado</span>
+      </div>
+      <div class="table-responsive">
+        <table class="props-table">
+          <thead>
+            <tr>
+              <th>Propiedad</th>
+              <th>Valor Configurado</th>
+              <th>Función y Utilidad Técnica</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>name</code></td>
+              <td><strong id="val-name">Cargando...</strong></td>
+              <td>Nombre completo de la app mostrado en la tienda, pantallas de confirmación y Splash Screen.</td>
+            </tr>
+            <tr>
+              <td><code>short_name</code></td>
+              <td><span class="chip" id="val-shortname">Cargando...</span></td>
+              <td>Nombre abreviado que aparece debajo del icono en la pantalla de inicio del móvil/escritorio.</td>
+            </tr>
+            <tr>
+              <td><code>start_url</code></td>
+              <td><code id="val-starturl">Cargando...</code></td>
+              <td>Ruta que se carga cuando el usuario abre la PWA desde su icono instalado.</td>
+            </tr>
+            <tr>
+              <td><code>display</code></td>
+              <td><span class="badge-accent" id="val-display">Cargando...</span></td>
+              <td><code>standalone</code> oculta la barra de URL y botones del navegador, luciendo como app nativa.</td>
+            </tr>
+            <tr>
+              <td><code>theme_color</code></td>
+              <td>
+                <div class="color-preview-box">
+                  <span class="color-circle" id="theme-color-circle"></span>
+                  <code id="val-themecolor">Cargando...</code>
+                </div>
+              </td>
+              <td>Color de la barra de estado superior del sistema operativo y barra de navegación.</td>
+            </tr>
+            <tr>
+              <td><code>background_color</code></td>
+              <td>
+                <div class="color-preview-box">
+                  <span class="color-circle" id="bg-color-circle"></span>
+                  <code id="val-bgcolor">Cargando...</code>
+                </div>
+              </td>
+              <td>Color del lienzo de fondo de la Splash Screen nativa mientras carga la PWA.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Paquete de iconos integrados -->
+    <section class="card">
+      <h2>Paquete de Iconos PNG Integrados</h2>
+      <p class="desc">Requeridos por la especificación PWA (mínimo 192x192 px para pantallas estándar y 512x512 px para Splash Screen y pantallas HiDPI):</p>
+      
+      <div class="icons-grid">
+        <div class="icon-item">
+          <div class="img-wrapper">
+            <img src="icons/icon-192x192.png" alt="Icono PWA 192x192" width="96" height="96">
+          </div>
+          <div class="icon-details">
+            <strong>icon-192x192.png</strong>
+            <span>192 &times; 192 px</span>
+            <small>Uso: Pantalla de inicio móvil y listas de aplicaciones</small>
+          </div>
+        </div>
+
+        <div class="icon-item">
+          <div class="img-wrapper">
+            <img src="icons/icon-512x512.png" alt="Icono PWA 512x512" width="128" height="128">
+          </div>
+          <div class="icon-details">
+            <strong>icon-512x512.png</strong>
+            <span>512 &times; 512 px</span>
+            <small>Uso: Splash Screen nativa y tiendas de aplicaciones</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guía paso a paso para Chrome DevTools -->
+    <section class="card devtools-guide">
+      <h2>Cómo verificar en Google Chrome DevTools</h2>
+      <ol class="steps-list">
+        <li>Abre esta página en Chrome (mediante <code>http://localhost/...</code> o un servidor local).</li>
+        <li>Presiona <kbd>F12</kbd> o <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> para abrir las Herramientas de Desarrollador.</li>
+        <li>Ve a la pestaña superior <strong>Application</strong> (o <strong>Aplicación</strong>).</li>
+        <li>En la barra lateral izquierda, bajo <strong>Application</strong>, haz clic en <strong>Manifest</strong>.</li>
+        <li>Observa cómo Chrome detecta automáticamente todos los valores: Name, Short Name, Start URL, Theme color, Background color y los dos iconos.</li>
+        <li>Haz clic en el enlace <strong>"Install app"</strong> que Chrome DevTools muestra para probar el diálogo de instalación.</li>
+      </ol>
+    </section>
+
+    <footer class="footer">
+      <a href="../index.html" class="btn btn-secondary">&larr; Volver al Portal de Prácticas</a>
+      <a href="../ejercicio2_appshell/index.html" class="btn btn-primary">Ir al Ejercicio 2: App Shell &rarr;</a>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

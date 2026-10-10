@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#8b5cf6">
+  <meta name="description" content="Ejercicio 3: Service Worker, Estrategias de Caché e IndexedDB">
+
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <link rel="manifest" href="manifest.json">
+
+  <title>Ejercicio 3 | Service Worker &amp; Almacenamiento Offline</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Barra de Estado de Conexión en Vivo -->
+  <div id="connectionBanner" class="connection-banner online">
+    <div class="banner-content">
+      <span class="status-indicator"></span>
+      <span id="connectionText">Conectado a Internet (Modo Online)</span>
+    </div>
+    <span class="banner-hint">Desconéctate o usa DevTools (Network &gt; Offline) para probar</span>
+  </div>
+
+  <div class="container">
+    <header class="header">
+      <div class="badge">Ejercicio 3</div>
+      <h1>Lógica de Service Worker &amp; Almacenamiento</h1>
+      <p class="subtitle">Ciclo de vida del Service Worker (registro, instalación, activación limpia), estrategias de caché estática/dinámica y persistencia asíncrona con IndexedDB.</p>
+    </header>
+
+    <!-- 1. PANEL DE CONTROL DEL SERVICE WORKER -->
+    <section class="card sw-panel">
+      <div class="card-header">
+        <h2>1. Estado y Ciclo de Vida del Service Worker</h2>
+        <span id="swStateBadge" class="badge-status waiting">Verificando...</span>
+      </div>
+
+      <div class="sw-grid">
+        <div class="sw-metric">
+          <small>Alcance (Scope)</small>
+          <strong id="swScope">Detectando...</strong>
+        </div>
+        <div class="sw-metric">
+          <small>Controlador Activo</small>
+          <strong id="swController">Comprobando...</strong>
+        </div>
+        <div class="sw-metric">
+          <small>Caché Estática</small>
+          <strong id="swStaticCache">pwa-static-v1</strong>
+        </div>
+        <div class="sw-metric">
+          <small>Caché Dinámica</small>
+          <strong id="swDynamicCache">pwa-dynamic-v1</strong>
+        </div>
+      </div>
+
+      <div class="sw-actions">
+        <button id="btnCheckCache" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 21h5v-5"></path></svg>
+          Inspeccionar Caché
+        </button>
+        <button id="btnClearCache" class="btn btn-danger-outline">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          Limpiar Cachés
+        </button>
+      </div>
+
+      <div id="cacheInspectBox" class="cache-inspect-box hidden">
+        <h4>Archivos encontrados en Cache Storage:</h4>
+        <ul id="cacheList" class="cache-list"></ul>
+      </div>
+    </section>
+
+    <!-- 2. DEMOSTRACIÓN DE ESTRATEGIAS DE CACHÉ -->
+    <section class="card">
+      <div class="card-header">
+        <h2>2. Estrategias de Caché: Estática vs Dinámica</h2>
+      </div>
+
+      <div class="strategies-grid">
+        <div class="strategy-card">
+          <div class="strategy-title">
+            <span class="strategy-pill static-pill">Cache First</span>
+            <h4>Recursos Estáticos (App Shell)</h4>
+          </div>
+          <p>HTML, CSS, JS, Iconos. Se entregan directamente desde <code>pwa-static-v1</code> al instante. Si se actualizan, el evento <code>activate</code> limpia la versión anterior.</p>
+          <span class="tag-status">✔ Activo para todos los scripts y estilos locales</span>
+        </div>
+
+        <div class="strategy-card">
+          <div class="strategy-title">
+            <span class="strategy-pill dynamic-pill">Network First</span>
+            <h4>Recursos Dinámicos</h4>
+          </div>
+          <p>Peticiones de datos externos o cambiantes. Primero consulta la red para obtener los datos más frescos; si no hay internet, recurre a <code>pwa-dynamic-v1</code>.</p>
+          <button id="btnFetchDynamic" class="btn btn-sm btn-primary" style="margin-top: 10px;">
+            Probar Petición Dinámica
+          </button>
+        </div>
+      </div>
+
+      <div id="dynamicResult" class="dynamic-result hidden">
+        <div id="dynamicResultText"></div>
+      </div>
+    </section>
+
+    <!-- 3. PERSISTENCIA DE DATOS ASÍNCRONA CON INDEXEDDB -->
+    <section class="card">
+      <div class="card-header">
+        <h2>3. Persistencia de Datos Offline con IndexedDB</h2>
+        <span class="tag">Base de Datos: PWA_Offline_DB</span>
+      </div>
+      <p class="desc">A diferencia de localStorage, <strong>IndexedDB</strong> es completamente asíncrona, soporta grandes volúmenes de datos estructurados y funciona perfectamente en modo Offline coordinada con el Service Worker.</p>
+
+      <!-- Formulario para agregar registros -->
+      <form id="notaForm" class="data-form">
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="inputTitulo">Título de la Tarea / Nota:</label>
+            <input type="text" id="inputTitulo" placeholder="Ej. Realizar auditoría Lighthouse" required>
+          </div>
+          <div class="form-group flex-1">
+            <label for="selectCategoria">Categoría:</label>
+            <select id="selectCategoria">
+              <option value="Trabajo">💼 Trabajo</option>
+              <option value="PWA">⚡ PWA</option>
+              <option value="Estudio">📚 Estudio</option>
+              <option value="General">📝 General</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="inputDesc">Descripción detallada:</label>
+          <textarea id="inputDesc" rows="2" placeholder="Detalle que se guardará de forma persistente..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-accent">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          Guardar en IndexedDB
+        </button>
+      </form>
+
+      <!-- Lista de registros persistidos -->
+      <div class="stored-records">
+        <div class="records-header">
+          <h3>Registros Almacenados en IndexedDB (<span id="totalNotasCount">0</span>)</h3>
+          <button id="btnClearAllNotes" class="btn btn-sm btn-secondary">Vaciar Registros</button>
+        </div>
+
+        <div id="notasList" class="notes-grid">
+          <!-- Renderizado dinámico desde db.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- GUÍA DE PRUEBA OFFLINE EN DEVTOOLS -->
+    <section class="card devtools-guide">
+      <h2>Cómo probar el Funcionamiento Offline en Chrome DevTools</h2>
+      <ol class="steps-list">
+        <li>Abre la consola con <kbd>F12</kbd> &gt; Pestaña <strong>Network</strong> (Red).</li>
+        <li>En la barra superior de Network, cambia el desplegable <strong>"No throttling"</strong> por <strong>"Offline"</strong>.</li>
+        <li>O ve a la pestaña <strong>Application</strong> &gt; <strong>Service Workers</strong> y marca la casilla <strong>"Offline"</strong>.</li>
+        <li>Presiona <kbd>F5</kbd> o <kbd>Ctrl</kbd> + <kbd>R</kbd> para recargar la página.</li>
+        <li><strong>Resultado:</strong> ¡La página carga instantáneamente sin pantalla de error de dinosaurio! Los estilos, scripts e imágenes son devueltos por el Service Worker y todas tus notas de IndexedDB siguen mostrándose y puedes seguir creando más.</li>
+      </ol>
+    </section>
+
+    <footer class="footer">
+      <a href="../ejercicio2_appshell/index.html" class="btn btn-secondary">&larr; Ejercicio 2: App Shell</a>
+      <a href="../index.html" class="btn btn-primary">Volver al Portal Principal &rarr;</a>
+    </footer>
+  </div>
+
+  <script src="db.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

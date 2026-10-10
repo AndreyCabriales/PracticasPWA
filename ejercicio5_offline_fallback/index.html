@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ef4444">
+  <meta name="description" content="Ejercicio 5: Interceptor de Peticiones y Manejo de Estado Offline">
+
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <link rel="manifest" href="manifest.json">
+
+  <title>Ejercicio 5 | Interceptor Fetch &amp; Fallback Offline</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Barra de Conexión en Vivo -->
+  <div id="statusBar" class="status-bar online">
+    <div>
+      <span class="status-indicator-dot"></span>
+      <span id="statusText">Conectado a Internet (Modo Online)</span>
+    </div>
+    <span style="font-size: 0.8rem; opacity: 0.85;">SW: <strong id="swStatusText">Iniciando...</strong></span>
+  </div>
+
+  <div class="container">
+    <header class="header">
+      <div class="badge">Ejercicio 5</div>
+      <h1>Interceptor de Peticiones &amp; Fallback Offline</h1>
+      <p class="subtitle">Programación de respuesta alternativa en <code>fetch</code> ante pérdida de red y renderizado de la plantilla personalizada <code>offline.html</code> cuando un recurso no existe en caché.</p>
+    </header>
+
+    <!-- 1. EXPLICACIÓN DEL INTERCEPTOR -->
+    <section class="card">
+      <div class="card-header">
+        <h2>1. ¿Por qué es crucial un Fallback en el Evento Fetch?</h2>
+        <span class="tag">Experiencia de Usuario PWA</span>
+      </div>
+      <p class="desc">Cuando un usuario pierde internet e intenta navegar a una página que <strong>nunca fue guardada en caché</strong>, el navegador por defecto mostraría la pantalla de error genérica (el clásico dinosaurio de desconexión). El <strong>interceptor de peticiones</strong> captura esa falla y entrega una pantalla de contingencia amigable y funcional.</p>
+    </section>
+
+    <!-- 2. LABORATORIO DE PRUEBA DE RUTAS (CACHÉ VS NO-CACHÉ) -->
+    <section class="card">
+      <div class="card-header">
+        <h2>2. Laboratorio de Rutas: Prueba el Comportamiento Offline</h2>
+      </div>
+      <p class="desc">Compara qué ocurre al navegar con conexión vs sin conexión en los dos tipos de rutas:</p>
+
+      <div class="routes-grid">
+        <!-- RUTA 1: CACHEADA -->
+        <div class="route-card cached">
+          <div>
+            <h3><span style="color:#10b981;">✔</span> Ruta Precacheada</h3>
+            <p>Esta página (<code>index.html</code>) y el App Shell están guardados en Cache Storage. Siempre cargan inmediatamente con o sin internet.</p>
+          </div>
+          <a href="./offline.html" class="btn btn-secondary">
+            Ver Plantilla offline.html Directa
+          </a>
+        </div>
+
+        <!-- RUTA 2: NO CACHEADA (DISPARA EL FALLBACK EN OFFLINE) -->
+        <div class="route-card non-cached">
+          <div>
+            <h3><span style="color:var(--primary);">⚠</span> Rutas NO Cacheadas</h3>
+            <p>Páginas que NO están en la memoria caché (ej: <code>catalogo-externo.html</code> o <code>perfil-usuario.html</code>). Si estás <strong>Offline</strong>, el Service Worker devolverá la plantilla <code>offline.html</code>.</p>
+          </div>
+          <div style="display: flex; gap: 8px; flex-direction: column;">
+            <a href="./catalogo-externo.html" class="btn btn-primary">
+              Probar Ruta No Cacheada 1 &rarr;
+            </a>
+            <a href="./perfil-usuario.html" class="btn btn-secondary">
+              Probar Ruta No Cacheada 2 &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. INTERCEPCIÓN DE PETICIONES DE DATOS/API -->
+    <section class="card">
+      <div class="card-header">
+        <h2>3. Intercepción de Peticiones Fetch a Recursos Dinámicos</h2>
+        <span class="tag">Fallback JSON</span>
+      </div>
+      <p class="desc">Además de documentos HTML, el interceptor también responde con objetos JSON o imágenes de contingencia cuando fallan peticiones secundarias:</p>
+
+      <button id="btnTestNonCached" class="btn btn-primary">
+        Ejecutar Petición a Endpoint No Cacheado
+      </button>
+
+      <div id="testResultBox" class="test-box" style="display: none;">
+        <span style="font-size: 0.82rem; color: #94a3b8; text-transform: uppercase;">Respuesta del Interceptor:</span>
+        <div id="testOutput" class="test-output"></div>
+      </div>
+    </section>
+
+    <!-- 4. GUÍA PASO A PASO PARA PROBAR EN CHROME DEVTOOLS -->
+    <section class="card">
+      <h2>Paso a Paso para Demostrar el Fallback en DevTools</h2>
+      <ol class="steps-list">
+        <li>Abre la consola con <kbd>F12</kbd> y ve a la pestaña <strong>Network</strong> (Red).</li>
+        <li>En el selector de velocidad (por defecto <strong>No throttling</strong>), selecciona <strong>Offline</strong>.</li>
+        <li>Observa cómo la barra superior cambia automáticamente a color rojo <strong>"¡Sin Conexión a Internet!"</strong>.</li>
+        <li>Haz clic en el botón rojo de arriba: <strong>"Probar Ruta No Cacheada 1"</strong>.</li>
+        <li><strong>Comprobación clave:</strong> En lugar de fallar o mostrar la pantalla de error del navegador, ¡el Service Worker intercepta la navegación y renderiza la plantilla estilizada <code>offline.html</code> con su botón de "Reintentar Conexión"!</li>
+        <li>Vuelve a habilitar la red (<strong>No throttling</strong>) y haz clic en "Reintentar Conexión" en la plantilla.</li>
+      </ol>
+    </section>
+
+    <footer class="footer">
+      <a href="../ejercicio4_cache_first/index.html" class="btn btn-secondary">&larr; Ejercicio 4: Cache-First</a>
+      <a href="../index.html" class="btn btn-primary">Volver al Portal Principal &rarr;</a>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

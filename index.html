@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Prácticas PWA | Desarrollo Web Progresivo</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #151e33;
+      --border: #23304d;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --e1-color: #3b82f6;
+      --e2-color: #10b981;
+      --e3-color: #8b5cf6;
+      --e4-color: #f59e0b;
+      --e5-color: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .badge-hub {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      padding: 4px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .exercise-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exercise-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .exercise-card.card-e1 { border-top: 4px solid var(--e1-color); }
+    .exercise-card.card-e2 { border-top: 4px solid var(--e2-color); }
+    .exercise-card.card-e3 { border-top: 4px solid var(--e3-color); }
+    .exercise-card.card-e4 { border-top: 4px solid var(--e4-color); }
+    .exercise-card.card-e5 { border-top: 4px solid var(--e5-color); }
+
+    .card-top {
+      margin-bottom: 20px;
+    }
+
+    .exercise-number {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+
+    .card-e1 .exercise-number { color: var(--e1-color); }
+    .card-e2 .exercise-number { color: var(--e2-color); }
+    .card-e3 .exercise-number { color: var(--e3-color); }
+    .card-e4 .exercise-number { color: var(--e4-color); }
+    .card-e5 .exercise-number { color: var(--e5-color); }
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #f1f5f9;
+    }
+
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+
+    .specs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .specs-list li {
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .specs-list li::before {
+      content: "✔";
+      font-weight: bold;
+    }
+
+    .card-e1 .specs-list li::before { color: var(--e1-color); }
+    .card-e2 .specs-list li::before { color: var(--e2-color); }
+    .card-e3 .specs-list li::before { color: var(--e3-color); }
+    .card-e4 .specs-list li::before { color: var(--e4-color); }
+    .card-e5 .specs-list li::before { color: var(--e5-color); }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-e1 { background: var(--e1-color); color: white; }
+    .btn-e1:hover { background: #2563eb; }
+
+    .btn-e2 { background: var(--e2-color); color: white; }
+    .btn-e2:hover { background: #059669; }
+
+    .btn-e3 { background: var(--e3-color); color: white; }
+    .btn-e3:hover { background: #7c3aed; }
+
+    .btn-e4 { background: var(--e4-color); color: #111; }
+    .btn-e4:hover { background: #d97706; }
+
+    .btn-e5 { background: var(--e5-color); color: white; }
+    .btn-e5:hover { background: #dc2626; }
+
+    /* SECCIÓN INSTRUCCIONES XAMPP */
+    .instructions-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .instructions-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+      color: #f8fafc;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    .step-num {
+      background: #334155;
+      color: white;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    code {
+      background: #1e293b;
+      color: #38bdf8;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88rem;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <div class="badge-hub">Prácticas de Progressive Web Apps (PWA)</div>
+      <h1>Laboratorio Integral de PWA</h1>
+      <p>Cinco ejercicios modulares e independientes cubriendo Manifest, App Shell con Splash Screen, Service Workers, Cache API (Cache-First) y Manejo de Estado Offline con Fallback.</p>
+    </header>
+
+    <!-- TARJETAS DE LOS 5 EJERCICIOS -->
+    <div class="grid">
+      
+      <!-- EJERCICIO 1 -->
+      <article class="exercise-card card-e1">
+        <div class="card-top">
+          <span class="exercise-number">Ejercicio 01</span>
+          <h2>Web App Manifest &amp; Metadatos</h2>
+          <p class="card-desc">Configuración del archivo <code>manifest.json</code> enlazado al HTML base y metadatos de instalación en el dispositivo.</p>
+          <ul class="specs-list">
+            <li>Propiedades: <code>name</code>, <code>short_name</code>, <code>start_url</code>.</li>
+            <li>Modo de visualización <code>display: standalone</code>.</li>
+            <li>Colores <code>theme_color</code> y <code>background_color</code>.</li>
+            <li>Iconos PNG: 192x192 px y 512x512 px.</li>
+            <li>Captura del evento <code>beforeinstallprompt</code>.</li>
+          </ul>
+        </div>
+        <a href="ejercicio1_manifest/index.html" class="btn btn-e1">
+          Abrir Ejercicio 1 &rarr;
+        </a>
+      </article>
+
+      <!-- EJERCICIO 2 -->
+      <article class="exercise-card card-e2">
+        <div class="card-top">
+          <span class="exercise-number">Ejercicio 02</span>
+          <h2>App Shell &amp; Splash Screen Nativa</h2>
+          <p class="card-desc">Arquitectura de interfaz base ultra rápida y responsiva con visualización de la Splash Screen nativa del sistema operativo.</p>
+          <ul class="specs-list">
+            <li>Diseño responsivo: Header fijo con branding.</li>
+            <li>Menú de navegación: Sidebar desktop, Drawer &amp; Bottom Nav móvil.</li>
+            <li>Contenedor principal <code>&lt;main&gt;</code> para contenido dinámico.</li>
+            <li>Skeleton Loading sin parpadeo.</li>
+            <li>Simulador y verificación en DevTools de Splash Screen.</li>
+          </ul>
+        </div>
+        <a href="ejercicio2_appshell/index.html" class="btn btn-e2">
+          Abrir Ejercicio 2 &rarr;
+        </a>
+      </article>
+
+      <!-- EJERCICIO 3 -->
+      <article class="exercise-card card-e3">
+        <div class="card-top">
+          <span class="exercise-number">Ejercicio 03</span>
+          <h2>Service Worker &amp; Almacenamiento</h2>
+          <p class="card-desc">Ciclo de vida del Service Worker, estrategias de caché y persistencia de datos asíncrona con IndexedDB.</p>
+          <ul class="specs-list">
+            <li>Registro, <code>install</code> (skipWaiting) y <code>activate</code> limpia.</li>
+            <li>Purga automática de cachés antiguas.</li>
+            <li>Estrategias combinadas para estáticos y dinámicos.</li>
+            <li>Persistencia asíncrona CRUD con <strong>IndexedDB</strong> offline.</li>
+            <li>Panel de control de almacenamiento en vivo.</li>
+          </ul>
+        </div>
+        <a href="ejercicio3_serviceworker/index.html" class="btn btn-e3">
+          Abrir Ejercicio 3 &rarr;
+        </a>
+      </article>
+
+      <!-- EJERCICIO 4 -->
+      <article class="exercise-card card-e4">
+        <div class="card-top">
+          <span class="exercise-number">Ejercicio 04</span>
+          <h2>Cache API &amp; Estrategia Cache-First</h2>
+          <p class="card-desc">Creación de memoria caché con la Cache API durante install, guardado del App Shell y entrega inmediata con Cache-First en fetch.</p>
+          <ul class="specs-list">
+            <li>Creación de caché en <code>install</code> con <code>caches.open</code>.</li>
+            <li>Precaching del App Shell (HTML, CSS, JS, iconos).</li>
+            <li>Intercepción en <code>fetch</code> sirviendo primero desde caché.</li>
+            <li>Fallback a red solo si el recurso no existe en caché.</li>
+            <li>Medidor de latencia en vivo (~0 ms de tiempo de respuesta).</li>
+          </ul>
+        </div>
+        <a href="ejercicio4_cache_first/index.html" class="btn btn-e4">
+          Abrir Ejercicio 4 &rarr;
+        </a>
+      </article>
+
+      <!-- EJERCICIO 5 -->
+      <article class="exercise-card card-e5">
+        <div class="card-top">
+          <span class="exercise-number">Ejercicio 05</span>
+          <h2>Interceptor Fetch &amp; Fallback Offline</h2>
+          <p class="card-desc">Programación de respuesta alternativa ante pérdida de conexión y plantilla personalizada de "Modo Sin Conexión" (offline.html).</p>
+          <ul class="specs-list">
+            <li>Intercepción de fallos de red en el evento <code>fetch</code>.</li>
+            <li>Entrega de la plantilla personalizada <code>offline.html</code>.</li>
+            <li>Sustitución del error de dinosaurio genérico del navegador.</li>
+            <li>Fallbacks dedicados para navegación HTML, APIs JSON e imágenes.</li>
+            <li>Laboratorio de pruebas con rutas cacheadas y no cacheadas.</li>
+          </ul>
+        </div>
+        <a href="ejercicio5_offline_fallback/index.html" class="btn btn-e5">
+          Abrir Ejercicio 5 &rarr;
+        </a>
+      </article>
+
+    </div>
+
+    <!-- INSTRUCCIONES DE EJECUCIÓN -->
+    <div class="instructions-card">
+      <h3>🚀 Cómo ejecutar y verificar en tu entorno local (XAMPP / Navegador)</h3>
+      <div class="steps">
+        <div class="step-item">
+          <span class="step-num">1</span>
+          <div>
+            <strong>Inicia Apache en XAMPP:</strong> Abre el panel de control de XAMPP y haz clic en <code>Start</code> junto a Apache.
+          </div>
+        </div>
+        <div class="step-item">
+          <span class="step-num">2</span>
+          <div>
+            <strong>Abre tu navegador (Google Chrome):</strong> Ingresa a la URL: <code>http://localhost/PrácticasPWA/</code>
+            <small style="display:block; color: #94a3b8; margin-top:2px;">(Nota: los Service Workers y Web App Manifest requieren un origen seguro <code>https://</code> o <code>http://localhost</code> para operar).</small>
+          </div>
+        </div>
+        <div class="step-item">
+          <span class="step-num">3</span>
+          <div>
+            <strong>Abre Chrome DevTools (<kbd>F12</kbd>):</strong> Explora las pestañas <strong>Application</strong> (Manifest, Service Workers, Storage, Cache Storage, IndexedDB) y <strong>Network</strong> (simulación de Offline throttling).
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

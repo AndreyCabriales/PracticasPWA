@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="description" content="Ejercicio 4: Cache API y Estrategia de Caché Estática (Cache-First)">
+
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <link rel="manifest" href="manifest.json">
+
+  <title>Ejercicio 4 | Cache API &amp; Estrategia Cache-First</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="badge">Ejercicio 4</div>
+      <h1>Cache API &amp; Estrategia Cache-First</h1>
+      <p class="subtitle">Creación de memoria caché durante <code>install</code>, precaching del App Shell e intercepción en <code>fetch</code> para servir primero desde caché antes de consultar la red.</p>
+    </header>
+
+    <!-- 1. DIAGRAMA EXPLICATIVO DE LA ESTRATEGIA CACHE-FIRST -->
+    <section class="card">
+      <div class="card-header">
+        <h2>1. Funcionamiento de la Estrategia Cache-First</h2>
+        <span class="tag">Patrón de Rendimiento Máximo</span>
+      </div>
+      <p class="desc">En <strong>Cache-First</strong>, el Service Worker asume que los recursos estáticos del App Shell raramente cambian. Prioriza el almacenamiento local para entregar tiempos de carga prácticamente instantáneos:</p>
+
+      <div class="diagram-flow">
+        <div class="flow-step">
+          <span class="step-circle">1</span>
+          <div class="step-info">
+            <strong>Petición de Recurso (Fetch)</strong>
+            <p>El navegador solicita un archivo estático (HTML, CSS, JS, Iconos).</p>
+          </div>
+        </div>
+
+        <div class="flow-arrow">&darr;</div>
+
+        <div class="flow-step">
+          <span class="step-circle">2</span>
+          <div class="step-info">
+            <strong>Búsqueda en Cache Storage (<code>caches.match</code>)</strong>
+            <p>El Service Worker intercepta la solicitud y verifica si existe en <code>appshell-cache-v1</code>.</p>
+          </div>
+        </div>
+
+        <div class="flow-arrow">&darr;</div>
+
+        <div class="flow-step" style="border-left: 4px solid #10b981;">
+          <span class="step-circle" style="background:#10b981; color:#fff;">3A</span>
+          <div class="step-info">
+            <strong>¿Está en Caché? &rarr; SÍ (Cache Hit)</strong>
+            <p>Se retorna inmediatamente desde la memoria caché local. <strong>0 ms de latencia de red</strong>.</p>
+          </div>
+        </div>
+
+        <div class="flow-step" style="border-left: 4px solid #f59e0b; margin-top: 6px;">
+          <span class="step-circle" style="background:#f59e0b; color:#111;">3B</span>
+          <div class="step-info">
+            <strong>¿No está en Caché? &rarr; NO (Cache Miss)</strong>
+            <p>Fallback a la Red: El Service Worker hace <code>fetch(request)</code>, entrega la respuesta y la guarda en caché.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. INSPECTOR VISUAL DE LA CACHE API -->
+    <section class="card">
+      <div class="card-header">
+        <h2>2. Recursos Almacenados en Cache Storage</h2>
+        <div style="display:flex; gap:10px;">
+          <button id="btnRefreshCache" class="btn btn-secondary">Actualizar</button>
+          <button id="btnClearCache" class="btn btn-danger-outline">Vaciar Caché</button>
+        </div>
+      </div>
+
+      <div class="cache-status-bar">
+        <div class="status-box">
+          <small>Service Worker</small>
+          <strong id="swStatus">Comprobando...</strong>
+        </div>
+        <div class="status-box">
+          <small>Memoria Caché Activa</small>
+          <strong id="cacheNameDisplay">appshell-cache-v1</strong>
+        </div>
+        <div class="status-box">
+          <small>Recursos Precacheados</small>
+          <strong id="cacheCount">Calculando...</strong>
+        </div>
+      </div>
+
+      <div class="cache-table-wrapper">
+        <table class="cache-table">
+          <thead>
+            <tr>
+              <th>Ruta del Recurso</th>
+              <th>Tipo de Elemento</th>
+              <th>Estado Offline</th>
+            </tr>
+          </thead>
+          <tbody id="cacheTableBody">
+            <tr>
+              <td colspan="3" style="text-align: center; color: #94a3b8;">Leyendo memoria caché...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. SIMULADOR Y BENCHMARK DE LATENCIA -->
+    <section class="card">
+      <div class="card-header">
+        <h2>3. Medidor de Latencia Cache-First (Benchmark)</h2>
+        <span class="tag">Comprobación en Vivo</span>
+      </div>
+      <p class="desc">Ejecuta una petición al archivo <code>style.css</code> para medir la velocidad de respuesta servida por el Service Worker:</p>
+
+      <div class="benchmark-box">
+        <div class="benchmark-controls">
+          <button id="btnRunBenchmark" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Medir Tiempo de Respuesta
+          </button>
+          <span style="font-size: 0.9rem; color: #94a3b8;">Recurso evaluado: <code id="benchmarkUrl">./style.css</code></span>
+        </div>
+
+        <div class="latency-display">
+          <div>
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; display: block;">Tiempo de Entrega:</span>
+            <span class="latency-time" id="latencyTime">0.0 ms</span>
+          </div>
+          <div class="latency-details" id="benchmarkSource">
+            Haz clic en "Medir Tiempo de Respuesta" para probar la entrega inmediata desde la Cache API.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. GUÍA DE VERIFICACIÓN EN DEVTOOLS -->
+    <section class="card">
+      <h2>Cómo verificar en Google Chrome DevTools</h2>
+      <ol class="steps-list">
+        <li>Abre la consola con <kbd>F12</kbd>.</li>
+        <li>Ve a la pestaña <strong>Application</strong> &gt; sección <strong>Storage</strong> &gt; <strong>Cache Storage</strong>.</li>
+        <li>Haz clic sobre <strong>appshell-cache-v1</strong>: verás la tabla oficial de Chrome con todas las URLs cacheadas durante el evento <code>install</code>.</li>
+        <li>Ve a la pestaña <strong>Network</strong> y recarga la página (<kbd>F5</kbd>): en la columna <strong>Size</strong> verás claramente que los recursos indican <code>(ServiceWorker)</code> con tiempo de respuesta de pocos milisegundos.</li>
+      </ol>
+    </section>
+
+    <footer class="footer">
+      <a href="../index.html" class="btn btn-secondary">&larr; Portal Principal de Prácticas</a>
+      <a href="../ejercicio5_offline_fallback/index.html" class="btn btn-primary">Ir al Ejercicio 5: Offline Fallback &rarr;</a>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ef4444">
+  <title>Modo Sin Conexión | PWA Offline Fallback</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      text-align: center;
+    }
+
+    .offline-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 24px;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .icon-container {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.15);
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--danger);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .badge-offline {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .technical-note {
+      background: #090e1a;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: left;
+      width: 100%;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+
+    .technical-note strong {
+      color: #38bdf8;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-retry {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-retry:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+    }
+
+    .btn-home {
+      background: #334155;
+      color: #f8fafc;
+    }
+
+    .btn-home:hover {
+      background: #475569;
+    }
+
+    .live-status {
+      font-size: 0.82rem;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-card">
+    <div class="icon-container">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+        <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+        <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+        <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+        <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+      </svg>
+    </div>
+
+    <span class="badge-offline">Plantilla Offline Fallback</span>
+    <h1>Estás en Modo Sin Conexión</h1>
+    <p>La página que intentaste abrir no se encuentra almacenada en la memoria caché local y no hay conexión a internet disponible en este momento.</p>
+
+    <div class="technical-note">
+      <strong>✔ Interceptado por el Service Worker (Ejercicio 5):</strong>
+      En lugar de mostrar el error genérico del navegador (el dinosaurio sin internet), el evento <code>fetch</code> detectó la falla de red y renderizó automáticamente esta plantilla alternativa <code>offline.html</code>.
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-retry" onclick="reintentar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        Reintentar Conexión
+      </button>
+      <a href="./index.html" class="btn btn-home">
+        Ir a Inicio Cacheado
+      </a>
+    </div>
+
+    <span class="live-status" id="liveStatus">Comprobando conectividad...</span>
+  </div>
+
+  <script>
+    const liveStatus = document.getElementById('liveStatus');
+
+    function checkStatus() {
+      if (navigator.onLine) {
+        liveStatus.textContent = '¡Conexión restablecida! Redirigiendo...';
+        liveStatus.style.color = '#34d399';
+        setTimeout(() => window.history.back(), 1000);
+      } else {
+        liveStatus.textContent = 'Estado actual: Desconectado de la red.';
+        liveStatus.style.color = '#f87171';
+      }
+    }
+
+    function reintentar() {
+      if (navigator.onLine) {
+        window.location.reload();
+      } else {
+        alert('Aún no tienes conexión a internet. Vuelve a habilitar la red en DevTools o enciende tu Wi-Fi.');
+      }
+    }
+
+    window.addEventListener('online', checkStatus);
+    window.addEventListener('offline', checkStatus);
+    checkStatus();
+  </script>
+</body>
+</html>

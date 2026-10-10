@@ -1,0 +1,9 @@
+# Logs y temporales
+*.log
+.DS_Store
+Thumbs.db
+
+# Directorios de dependencias o builds si aplican
+node_modules/
+.vscode/
+.idea/

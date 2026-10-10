@@ -1,0 +1,25 @@
+{
+  "name": "Ejercicio 4 - Cache API & Estrategia Cache-First",
+  "short_name": "PWA E4 CacheFirst",
+  "description": "Demostración didáctica de la Cache API y estrategia de almacenamiento estático Cache-First.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#f59e0b",
+  "background_color": "#1e1b4b",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

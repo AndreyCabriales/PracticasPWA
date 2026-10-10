@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10b981">
+  <meta name="description" content="Ejercicio 2: Maquetado del App Shell y Splash Screen Nativa">
+
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <link rel="manifest" href="manifest.json">
+
+  <title>Ejercicio 2 | App Shell &amp; Splash Screen Nativa</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Overlay para menú móvil -->
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <!-- Contenedor del App Shell -->
+  <div class="app-layout">
+    
+    <!-- 1. HEADER (Encabezado fijo del App Shell) -->
+    <header class="app-header">
+      <div class="header-left">
+        <button id="btnToggleMenu" class="icon-btn mobile-only" aria-label="Abrir menú de navegación">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div class="brand">
+          <img src="icons/icon-192x192.png" alt="Logo App Shell" width="32" height="32" class="brand-logo">
+          <span class="brand-name">AppShell PWA</span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <span class="view-title" id="currentViewTitle">Inicio</span>
+      </div>
+
+      <div class="header-right">
+        <button id="btnSimulateSplash" class="btn-splash-preview" title="Simular Splash Screen Nativa">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span class="desktop-only">Simular Splash Screen</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <!-- 2. MENÚ DE NAVEGACIÓN (Sidebar desktop / Drawer responsive) -->
+      <aside id="appSidebar" class="app-sidebar">
+        <div class="sidebar-header mobile-only">
+          <div class="brand">
+            <img src="icons/icon-192x192.png" alt="Logo" width="28" height="28">
+            <span>Navegación</span>
+          </div>
+          <button id="btnCloseSidebar" class="icon-btn" aria-label="Cerrar menú">&times;</button>
+        </div>
+
+        <nav class="nav-links">
+          <a href="#inicio" class="nav-link active" data-view="inicio">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span>Inicio</span>
+          </a>
+          <a href="#appshell" class="nav-link" data-view="appshell">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            <span>Arquitectura Shell</span>
+          </a>
+          <a href="#splash" class="nav-link" data-view="splash">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            <span>Splash Screen</span>
+          </a>
+          <a href="#devtools" class="nav-link" data-view="devtools">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+            <span>Verificación DevTools</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <a href="../index.html" class="nav-link-subtle">&larr; Portal Principal</a>
+        </div>
+      </aside>
+
+      <!-- 3. CONTENEDOR PRINCIPAL (<main>) -->
+      <main class="app-main">
+        
+        <!-- VISTA 1: INICIO -->
+        <section id="view-inicio" class="view-section active">
+          <div class="banner">
+            <div class="badge">Ejercicio 2</div>
+            <h1>Maquetado de App Shell Responsivo</h1>
+            <p>El patrón <strong>App Shell</strong> separa la interfaz estática (cabecera, menú, esqueleto visual) del contenido dinámico, permitiendo un renderizado casi instantáneo en cualquier dispositivo.</p>
+          </div>
+
+          <div class="cards-grid">
+            <div class="card">
+              <h3>📱 Interfaz 100% Responsiva</h3>
+              <p>Header adaptativo con menú hamburguesa en pantallas móviles y barra lateral permanente en escritorio. En dispositivos móviles incluye además barra de navegación inferior.</p>
+            </div>
+            <div class="card">
+              <h3>🚀 Carga Instantánea</h3>
+              <p>Los componentes del Shell se almacenan en caché inmediatamente, permitiendo que la aplicación se pinte en pantalla en menos de 100ms.</p>
+            </div>
+            <div class="card">
+              <h3>🎨 Splash Screen Nativa</h3>
+              <p>Generada automáticamente por el sistema operativo móvil y Chrome a partir de <code>background_color</code>, <code>theme_color</code> y el icono de <code>512x512 px</code>.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- VISTA 2: ARQUITECTURA APP SHELL -->
+        <section id="view-appshell" class="view-section">
+          <h2>Análisis de la Arquitectura App Shell</h2>
+          <p class="section-lead">Desglose de los 3 elementos fundamentales solicitados en el ejercicio:</p>
+
+          <div class="shell-diagram">
+            <div class="diagram-box header-box">
+              <strong>1. Header (Encabezado)</strong>
+              <span>Fijo en la parte superior. Contiene branding, menú y acciones rápidas.</span>
+            </div>
+            <div class="diagram-body">
+              <div class="diagram-box nav-box">
+                <strong>2. Menú de Navegación</strong>
+                <span>Barra lateral en escritorio / Drawer y Bottom Nav en móvil.</span>
+              </div>
+              <div class="diagram-box main-box">
+                <strong>3. Contenedor Principal (&lt;main&gt;)</strong>
+                <span>Área dinámica donde se inyecta o actualiza el contenido sin recargar el Shell.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Demostración de Skeleton Loading en el Contenedor Principal</h3>
+            <p>Así reacciona el App Shell mientras los datos remotos se descargan:</p>
+            <div class="skeleton-demo" id="skeletonContainer">
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text short"></div>
+            </div>
+            <button id="btnReloadContent" class="btn btn-sm btn-secondary" style="margin-top: 12px;">Simular Carga de Contenido Dinámico</button>
+          </div>
+        </section>
+
+        <!-- VISTA 3: SPLASH SCREEN -->
+        <section id="view-splash" class="view-section">
+          <h2>Splash Screen Nativa en PWA</h2>
+          <p class="section-lead">¿Cómo funciona y cómo la genera el navegador?</p>
+
+          <div class="splash-explainer">
+            <div class="card">
+              <h3>Requisitos para la Splash Screen Nativa</h3>
+              <ul class="clean-list">
+                <li><strong>Icono &ge; 512x512 px:</strong> Chrome usa este icono centrado en pantalla.</li>
+                <li><strong>background_color:</strong> Define el color de fondo para evitar pantallas blancas parpadeantes (configurado en <code>#064e3b</code>).</li>
+                <li><strong>theme_color:</strong> Ajusta el color de la barra del sistema (configurado en <code>#10b981</code>).</li>
+                <li><strong>name o short_name:</strong> Texto mostrado al pie del icono durante la carga.</li>
+              </ul>
+              <button id="btnTriggerSplash2" class="btn btn-primary" style="margin-top: 16px;">
+                ▶ Probar Animación de Splash Screen Aquí
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- VISTA 4: VERIFICACIÓN CHROME DEVTOOLS -->
+        <section id="view-devtools" class="view-section">
+          <h2>Verificación Paso a Paso en Chrome DevTools</h2>
+          <div class="card">
+            <ol class="steps-list">
+              <li>Presiona <kbd>F12</kbd> en Google Chrome.</li>
+              <li>Entra a la pestaña <strong>Application</strong> (Aplicación).</li>
+              <li>Selecciona <strong>Manifest</strong> en el panel izquierdo.</li>
+              <li>Desplaza la vista hacia abajo hasta la sección de <strong>Icons</strong>. Chrome mostrará cómo se dibuja la <strong>Splash screen</strong> con el fondo esmeralda y el icono de 512x512 px.</li>
+              <li>Activa la emulación de dispositivo móvil (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd>) para apreciar el cambio automático a navegación móvil (menú hamburguesa y barra inferior).</li>
+            </ol>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- 4. BOTTOM NAV (Navegación inferior en móvil) -->
+    <nav class="mobile-bottom-nav mobile-only">
+      <button class="bottom-nav-item active" data-view="inicio">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        <span>Inicio</span>
+      </button>
+      <button class="bottom-nav-item" data-view="appshell">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line></svg>
+        <span>Shell</span>
+      </button>
+      <button class="bottom-nav-item" data-view="splash">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"></rect></svg>
+        <span>Splash</span>
+      </button>
+      <button class="bottom-nav-item" data-view="devtools">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6"></path></svg>
+        <span>DevTools</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- SIMULADOR VISUAL DE SPLASH SCREEN NATIVA -->
+  <div id="splashScreenModal" class="native-splash-screen hidden">
+    <div class="splash-content">
+      <img src="icons/icon-512x512.png" alt="Splash Icon" class="splash-icon">
+      <h2 class="splash-name">AppShell PWA</h2>
+      <div class="splash-loader"></div>
+      <p class="splash-caption">Simulación de Splash Screen Nativa (manifest: background_color #064e3b)</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
